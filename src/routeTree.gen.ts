@@ -12,11 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as FarmsRouteImport } from './routes/farms'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ShippingRouteImport } from './routes/shipping'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 
@@ -33,6 +35,11 @@ const AboutRoute = AboutRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -60,6 +67,11 @@ const ShippingRoute = ShippingRouteImport.update({
   path: '/shipping',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -75,11 +87,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/farms': typeof FarmsRoute
   '/products': typeof ProductsRouteWithChildren
   '/shipping': typeof ShippingRoute
+  '/wishlist': typeof WishlistRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
 }
@@ -87,10 +101,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/farms': typeof FarmsRoute
   '/shipping': typeof ShippingRoute
+  '/wishlist': typeof WishlistRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products': typeof ProductsIndexRoute
 }
@@ -99,11 +115,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/farms': typeof FarmsRoute
   '/products': typeof ProductsRouteWithChildren
   '/shipping': typeof ShippingRoute
+  '/wishlist': typeof WishlistRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/products/': typeof ProductsIndexRoute
 }
@@ -113,11 +131,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/blog'
+    | '/cart'
     | '/contact'
     | '/corporate'
     | '/farms'
     | '/products'
     | '/shipping'
+    | '/wishlist'
     | '/products/$slug'
     | '/products/'
   fileRoutesByTo: FileRoutesByTo
@@ -125,10 +145,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/blog'
+    | '/cart'
     | '/contact'
     | '/corporate'
     | '/farms'
     | '/shipping'
+    | '/wishlist'
     | '/products/$slug'
     | '/products'
   id:
@@ -136,11 +158,13 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/blog'
+    | '/cart'
     | '/contact'
     | '/corporate'
     | '/farms'
     | '/products'
     | '/shipping'
+    | '/wishlist'
     | '/products/$slug'
     | '/products/'
   fileRoutesById: FileRoutesById
@@ -149,11 +173,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
+  CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   CorporateRoute: typeof CorporateRoute
   FarmsRoute: typeof FarmsRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   ShippingRoute: typeof ShippingRoute
+  WishlistRoute: typeof WishlistRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -177,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -214,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShippingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/'
@@ -249,11 +289,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
+  CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   CorporateRoute: CorporateRoute,
   FarmsRoute: FarmsRoute,
   ProductsRoute: ProductsRouteWithChildren,
   ShippingRoute: ShippingRoute,
+  WishlistRoute: WishlistRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
