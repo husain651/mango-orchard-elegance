@@ -119,11 +119,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             onClick={() => {
               addToCart({
                 slug: product.slug,
-                size: product.sizes[0],
+                size: product.sizes[0] ?? "5 kg",
                 qty: 1,
                 price: product.price,
               });
-              toast.success(`${product.name} ${product.sizes[0]} added to cart`);
+              toast.success(`${product.name} added to cart`);
             }}
             className="bg-gradient-gold flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.02] disabled:pointer-events-none disabled:opacity-40"
           >
