@@ -132,12 +132,12 @@ function Corporate() {
                 Tell us the destination and volume. Pricing follows within one business day.
               </p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <Field name="company" label="Company" error={errors.company} />
-                <Field name="name" label="Your name" error={errors.name} />
-                <Field name="email" label="Work email" type="email" error={errors.email} />
-                <Field name="country" label="Destination country" error={errors.country} />
-                <Field name="volume" label="Estimated volume" placeholder="e.g. 12 tonnes" error={errors.volume} />
-                <Field name="variety" label="Preferred variety" placeholder="Chaunsa" error={errors.variety} />
+                <Field name="company" label="Company" error={errors["company"]} />
+                <Field name="name" label="Your name" error={errors["name"]} />
+                <Field name="email" label="Work email" type="email" error={errors["email"]} />
+                <Field name="country" label="Destination country" error={errors["country"]} />
+                <Field name="volume" label="Estimated volume" placeholder="e.g. 12 tonnes" error={errors["volume"]} />
+                <Field name="variety" label="Preferred variety" placeholder="Chaunsa" error={errors["variety"]} />
               </div>
               <div className="mt-4">
                 <label htmlFor="message" className="text-xs font-semibold tracking-wide uppercase">
@@ -174,7 +174,7 @@ function Field({
   label: string;
   type?: string;
   placeholder?: string;
-  error?: string;
+  error?: string | undefined;
 }) {
   return (
     <div>

@@ -4,7 +4,7 @@ import { Heart, MapPin, Minus, Plus, ShieldCheck, Snowflake, Star, Truck } from 
 import { toast } from "sonner";
 import { ProductCard, SweetnessMeter } from "@/components/site/ProductCard";
 import { Reveal } from "@/components/site/Reveal";
-import { getProduct, products } from "@/lib/products";
+import { getProduct, products, type Product } from "@/lib/products";
 import { useShop } from "@/lib/store";
 
 export const Route = createFileRoute("/products/$slug")({
@@ -39,7 +39,7 @@ const reviews = [
 ];
 
 function ProductDetail() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: Product };
   const { addToCart, toggleWishlist, wishlist, markViewed } = useShop();
   const [size, setSize] = useState(product.sizes[0] ?? "5 kg");
   const [qty, setQty] = useState(1);
