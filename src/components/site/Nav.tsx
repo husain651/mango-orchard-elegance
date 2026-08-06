@@ -41,7 +41,9 @@ export function Nav() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "glass shadow-soft" : "border-b border-transparent bg-transparent"
+        scrolled
+          ? "glass shadow-soft"
+          : "border-b border-transparent bg-transparent text-primary-foreground"
       }`}
     >
       <nav
@@ -65,8 +67,8 @@ export function Nav() {
               <Link
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                activeProps={{ className: "text-foreground after:scale-x-100" }}
-                inactiveProps={{ className: "text-muted-foreground" }}
+                activeProps={{ className: "after:scale-x-100" }}
+                inactiveProps={{ className: "opacity-70" }}
                 className="relative rounded-full px-3 py-2 text-sm font-medium transition-colors after:absolute after:inset-x-3 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-foreground hover:after:scale-x-100"
               >
                 {l.label}
@@ -80,27 +82,27 @@ export function Nav() {
             onClick={() => setSearchOpen((s) => !s)}
             aria-label="Search products"
             aria-expanded={searchOpen}
-            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="grid size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100"
           >
             <Search className="size-[18px]" />
           </button>
           <button
             onClick={toggle}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="grid size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100"
           >
             {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
           </button>
           <button
             aria-label="Language: English"
-            className="hidden size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:grid"
+            className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
           >
             <Globe className="size-[18px]" />
           </button>
           <Link
             to="/wishlist"
             aria-label={`Wishlist, ${wishlist.length} items`}
-            className="relative grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="relative grid size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100"
           >
             <Heart className="size-[18px]" />
             {wishlist.length > 0 && <Badge>{wishlist.length}</Badge>}
@@ -108,7 +110,7 @@ export function Nav() {
           <Link
             to="/cart"
             aria-label={`Cart, ${count} items`}
-            className="relative grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="relative grid size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100"
           >
             <ShoppingBag className="size-[18px]" />
             {count > 0 && <Badge>{count}</Badge>}
@@ -116,7 +118,7 @@ export function Nav() {
           <button
             onClick={() => setOpen(true)}
             aria-label="Open menu"
-            className="grid size-11 place-items-center rounded-full text-foreground transition-colors hover:bg-secondary xl:hidden"
+            className="grid size-11 place-items-center rounded-full transition-colors hover:bg-secondary xl:hidden"
           >
             <Menu className="size-5" />
           </button>
