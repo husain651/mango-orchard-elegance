@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/site/PageHeader";
 import { getProduct } from "@/lib/products";
 import { useShop } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -21,6 +23,8 @@ export const Route = createFileRoute("/cart")({
 
 function Cart() {
   const { cart, setQty, removeLine, subtotal, clearCart } = useShop();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const shipping = subtotal > 0 ? 24 : 0;
@@ -134,15 +138,19 @@ function Cart() {
                     <dd>${total.toFixed(2)}</dd>
                   </div>
                 </dl>
-                <button
-                  onClick={() => {
-                    clearCart();
-                    toast.success("Order placed — our team will confirm your shipping window.");
+                <Link
+                  to="/checkout"
+                  onClick={(e) => {
+                    if (!isAuthenticated) {
+                      e.preventDefault();
+                      toast.error("Please login to continue");
+                      navigate({ to: "/login" });
+                    }
                   }}
-                  className="bg-gradient-gold mt-6 min-h-12 w-full rounded-full text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.01]"
+                  className="bg-gradient-gold mt-6 min-h-12 w-full rounded-full text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.01] flex items-center justify-center"
                 >
                   Checkout
-                </button>
+                </Link>
               </aside>
             </div>
           )}

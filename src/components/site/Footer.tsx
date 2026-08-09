@@ -1,7 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    // In a real app, this would send to a backend
+    toast.success("Thanks for subscribing! You'll receive our next newsletter.");
+    setEmail("");
+  };
+
   return (
     <footer className="bg-gradient-forest text-primary-foreground">
       <div className="container-luxe grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4 lg:py-20">
@@ -35,6 +50,8 @@ export function Footer() {
             { label: "Farm-to-table", to: "/about" },
             { label: "Blog", to: "/blog" },
             { label: "Contact", to: "/contact" },
+            { label: "FAQ", to: "/faq" },
+            { label: "Track Order", to: "/tracking" },
           ]}
         />
         <FooterCol
@@ -53,7 +70,7 @@ export function Footer() {
           <p className="mt-4 text-sm opacity-80">
             Harvest alerts, allocation drops and shipping windows — once a month.
           </p>
-          <form className="mt-4 flex gap-2" onSubmit={(e) => e.preventDefault()}>
+          <form className="mt-4 flex gap-2" onSubmit={handleNewsletterSubmit}>
             <label className="sr-only" htmlFor="newsletter">
               Email address
             </label>
@@ -61,6 +78,8 @@ export function Footer() {
               id="newsletter"
               type="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@company.com"
               className="min-w-0 flex-1 rounded-full border border-white/20 bg-white/5 px-4 py-2.5 text-sm outline-hidden placeholder:text-primary-foreground/50 focus-visible:border-accent"
             />
@@ -86,8 +105,8 @@ export function Footer() {
         <div className="container-luxe flex flex-col items-center justify-between gap-3 py-6 text-xs opacity-70 sm:flex-row">
           <p>© {new Date().getFullYear()} MangoPlus. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/contact">Privacy Policy</Link>
-            <Link to="/contact">Terms &amp; Conditions</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms &amp; Conditions</Link>
           </div>
         </div>
       </div>

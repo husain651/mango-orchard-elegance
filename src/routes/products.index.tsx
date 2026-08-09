@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { products } from "@/lib/products";
 import { useShop } from "@/lib/store";
+import { useSearch } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/products/")({
   head: () => ({
@@ -28,7 +29,8 @@ export const Route = createFileRoute("/products/")({
 const sorts = ["Featured", "Price: low to high", "Price: high to low", "Sweetest"] as const;
 
 function ProductsPage() {
-  const [query, setQuery] = useState("");
+  const search = useSearch({ from: "/products" });
+  const [query, setQuery] = useState((search.q as string) || "");
   const [origin, setOrigin] = useState("All");
   const [sort, setSort] = useState<(typeof sorts)[number]>("Featured");
   const [inStockOnly, setInStockOnly] = useState(false);

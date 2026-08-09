@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, GitCompare, Eye } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/lib/products";
 import { useShop } from "@/lib/store";
+import { useComparison } from "@/lib/comparison";
+import { QuickView } from "./QuickView";
 
 export function SweetnessMeter({ value }: { value: number }) {
   return (
@@ -32,7 +34,9 @@ export function SweetnessMeter({ value }: { value: number }) {
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { addToCart, toggleWishlist, wishlist } = useShop();
+  const { addToCompare, removeFromCompare, isInCompare, compareList } = useComparison();
   const saved = wishlist.includes(product.slug);
+  const compared = isInCompare(product.slug);
   const soldOut = product.stock === 0;
 
   return (
@@ -128,6 +132,37 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             className="bg-gradient-gold flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.02] disabled:pointer-events-none disabled:opacity-40"
           >
             <ShoppingBag className="size-4" /> Add to cart
+          </button>
+          <QuickView product={product}>
+            <button
+              className="flex min-h-11 items-center rounded-full border border-border px-3 text-sm font-medium transition-colors hover:bg-secondary"
+              title="Quick view"
+            >
+              <Eye className="size-4" />
+            </button>
+          </QuickView>
+          <button
+            onClick={() => {
+              if (compared) {
+                removeFromCompare(product.slug);
+                toast("Removed from comparison");
+              } else {
+                if (compareList.length >= 4) {
+                  toast.error("Maximum 4 items can be compared");
+                  return;
+                }
+                addToCompare(product.slug);
+                toast("Added to comparison");
+              }
+            }}
+            className={`flex min-h-11 items-center rounded-full border px-3 text-sm font-medium transition-colors ${
+              compared
+                ? "border-accent bg-accent/10 text-accent-foreground dark:text-accent"
+                : "border-border hover:bg-secondary"
+            }`}
+            title={compared ? "Remove from comparison" : "Add to comparison"}
+          >
+            <GitCompare className="size-4" />
           </button>
           <Link
             to="/products/$slug"

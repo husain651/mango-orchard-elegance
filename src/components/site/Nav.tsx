@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Globe,
@@ -9,14 +9,20 @@ import {
   ShoppingBag,
   Sun,
   X,
+  User,
+  DollarSign,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShop, useTheme } from "@/lib/store";
+import { useLanguage } from "@/lib/language";
+import { useAuth } from "@/lib/auth";
+import { useCurrency } from "@/lib/currency";
 
 const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/products", label: "Products" },
+  { to: "/compare", label: "Compare" },
   { to: "/corporate", label: "Corporate Orders" },
   { to: "/shipping", label: "International Delivery" },
   { to: "/farms", label: "Our Farms" },
@@ -28,15 +34,40 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [langOpen, setLangOpen] = useState(false);
+  const [currencyOpen, setCurrencyOpen] = useState(false);
+  const navigate = useNavigate();
   const { theme, toggle } = useTheme();
   const { count, wishlist } = useShop();
+  const { language, setLanguage, t } = useLanguage();
+  const { isAuthenticated, user, logout } = useAuth();
+  const { currency, setCurrency } = useCurrency();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langOpen && !(e.target as Element).closest('.lang-dropdown')) {
+        setLangOpen(false);
+      }
+      if (currencyOpen && !(e.target as Element).closest('.currency-dropdown')) {
+        setCurrencyOpen(false);
+      }
+    };
+    if (langOpen || currencyOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return undefined;
+  }, [langOpen, currencyOpen]);
 
   return (
     <header
@@ -93,12 +124,74 @@ export function Nav() {
           >
             {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
           </button>
-          <button
-            aria-label="Language: English"
-            className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
-          >
-            <Globe className="size-[18px]" />
-          </button>
+          <div className="relative lang-dropdown">
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              aria-label={`Language: ${language === "en" ? "English" : language === "ur" ? "Urdu" : "Arabic"}`}
+              className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
+            >
+              <Globe className="size-[18px]" />
+            </button>
+            {langOpen && (
+              <div className="absolute right-0 top-full mt-2 rounded-2xl border border-border bg-card p-2 shadow-soft">
+                {[
+                  { code: "en" as const, label: "English" },
+                  { code: "ur" as const, label: "اردو" },
+                  { code: "ar" as const, label: "العربية" },
+                ].map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setLanguage(lang.code);
+                      setLangOpen(false);
+                    }}
+                    className={`block w-full rounded-xl px-4 py-2 text-left text-sm transition-colors ${
+                      language === lang.code
+                        ? "bg-accent text-accent-foreground"
+                        : "hover:bg-secondary"
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="relative currency-dropdown">
+            <button
+              onClick={() => setCurrencyOpen(!currencyOpen)}
+              aria-label={`Currency: ${currency}`}
+              className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
+            >
+              <DollarSign className="size-[18px]" />
+            </button>
+            {currencyOpen && (
+              <div className="absolute right-0 top-full mt-2 rounded-2xl border border-border bg-card p-2 shadow-soft">
+                {[
+                  { code: "PKR" as const, label: "PKR" },
+                  { code: "USD" as const, label: "USD" },
+                  { code: "EUR" as const, label: "EUR" },
+                  { code: "GBP" as const, label: "GBP" },
+                  { code: "AED" as const, label: "AED" },
+                ].map((curr) => (
+                  <button
+                    key={curr.code}
+                    onClick={() => {
+                      setCurrency(curr.code);
+                      setCurrencyOpen(false);
+                    }}
+                    className={`block w-full rounded-xl px-4 py-2 text-left text-sm transition-colors ${
+                      currency === curr.code
+                        ? "bg-accent text-accent-foreground"
+                        : "hover:bg-secondary"
+                    }`}
+                  >
+                    {curr.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Link
             to="/wishlist"
             aria-label={`Wishlist, ${wishlist.length} items`}
@@ -115,6 +208,23 @@ export function Nav() {
             <ShoppingBag className="size-[18px]" />
             {count > 0 && <Badge>{count}</Badge>}
           </Link>
+          {isAuthenticated ? (
+            <Link
+              to="/account"
+              aria-label={`Account: ${user?.name}`}
+              className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
+            >
+              <User className="size-[18px]" />
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden size-11 place-items-center rounded-full opacity-80 transition-colors hover:bg-secondary hover:opacity-100 sm:grid"
+              aria-label="Sign in"
+            >
+              <User className="size-[18px]" />
+            </Link>
+          )}
           <button
             onClick={() => setOpen(true)}
             aria-label="Open menu"
@@ -136,7 +246,14 @@ export function Nav() {
           >
             <form
               className="container-luxe flex items-center gap-3 py-4"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  navigate({ to: "/products", search: { q: searchQuery } });
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }
+              }}
             >
               <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
               <label className="sr-only" htmlFor="site-search">
@@ -144,6 +261,8 @@ export function Nav() {
               </label>
               <input
                 id="site-search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search Sindhri, Chaunsa, Anwar Ratol…"
                 className="w-full bg-transparent py-2 text-sm outline-hidden placeholder:text-muted-foreground"
               />

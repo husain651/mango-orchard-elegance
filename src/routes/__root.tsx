@@ -14,6 +14,11 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { StoreProvider } from "@/lib/store";
+import { LanguageProvider } from "@/lib/language";
+import { ComparisonProvider } from "@/lib/comparison";
+import { AuthProvider } from "@/lib/auth";
+import { CurrencyProvider } from "@/lib/currency";
+import { DiscountPopup } from "@/components/site/DiscountPopup";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -130,19 +135,28 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-full focus:bg-card focus:px-4 focus:py-2 focus:text-sm"
-        >
-          Skip to content
-        </a>
-        <Nav />
-        <main id="main">
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </main>
-        <Footer />
-        <Toaster />
+        <LanguageProvider>
+          <ComparisonProvider>
+            <AuthProvider>
+              <CurrencyProvider>
+                <a
+                  href="#main"
+                  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded-full focus:bg-card focus:px-4 focus:py-2 focus:text-sm"
+                >
+                  Skip to content
+                </a>
+                <Nav />
+                <main id="main">
+                  {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+                  <Outlet />
+                </main>
+                <Footer />
+                <Toaster />
+                <DiscountPopup />
+              </CurrencyProvider>
+            </AuthProvider>
+          </ComparisonProvider>
+        </LanguageProvider>
       </StoreProvider>
     </QueryClientProvider>
   );
